@@ -6,7 +6,7 @@ cur = conn.cursor()
 
 
 # Abre porta serial
-ser = serial.Serial('COM5', 9600)
+ser = serial.Serial('COM3', 9600)
 
 while True:
     print("Aguardando comando...")
@@ -26,22 +26,18 @@ while True:
     # para nao acontecer o encerramento do programa
     # caso o sensor não passe a mensagem correta, por qualquer motivo.
     # Configurar de acordo com o 
-    if len(values) == '\n':
-        print("Registro Malformado: Quantidade invalida de campos")
+ 
+   # print(values)
+
+    try:
+        # Insere registro na tabela
+        cur.execute("""
+            INSERT INTO dados (estado)
+            VALUES(?)""", values)
+        conn.commit()
+    except Exception as e:
+        print("O registro nao pode ser gravado: {}".format(e))
         continue
-
-  #  print(values)
-
-        try:
-            # Insere registro na tabela
-            cur.execute("""
-                INSERT INTO dados (estado)
-                VALUES()""", values)
-            conn.commit()
-        except Exception as e:
-            print("O registro nao pode ser gravado: {}".format(e))
-            continue
-
     print("Registro gravado com sucesso")
 
 cur.close()
